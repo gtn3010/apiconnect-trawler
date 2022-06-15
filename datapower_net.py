@@ -331,26 +331,25 @@ class DataPower():
                 "invoke_api_{}_size".format(api['name']),
                 size,
                 pod_name=self.name, labels=self.labels)
+
             self.trawler.set_gauge(
                 'datapower',
                 "invoke_api_{}_time".format(api['name']),
                 elapsed_time,
                 pod_name=self.name, labels=self.labels)
-            status_labels = self.labels
-            status_labels['code'] = status
-            self.trawler.set_gauge(
+            status_labels = {**self.labels, **{"code": status}}
+            self.trawler.inc_counter(
                 'datapower',
                 "invoke_api_{}_status_total".format(api['name']),
                 1,
-                pod_name=self.name, labels=self.labels)
+                pod_name=self.name, labels=status_labels)
         except requests.RequestException:
-            status_labels = self.labels
-            status_labels['code'] = '000'
-            self.trawler.set_gauge(
+            status_labels = {**self.labels, **{"code": '000'}}
+            self.trawler.inc_counter(
                 'datapower',
                 "invoke_api_{}_status_total".format(api['name']),
                 0,
-                pod_name=self.name, labels=self.labels)
+                pod_name=self.name, labels=status_labels)
 
 if __name__ == "__main__":
     net = DataPowerNet()
