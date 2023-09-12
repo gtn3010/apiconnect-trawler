@@ -36,7 +36,7 @@ nets:
     timeout: 5 
     username: trawler-monitor
     namespace: apic-gateway
-  product:
+  apiconnect:
     enabled: true
     username: trawler-monitor
     namespace: apic-management
