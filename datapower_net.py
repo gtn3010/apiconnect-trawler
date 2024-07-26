@@ -31,6 +31,7 @@ class DataPowerNet():
         self.username = config.get('username', 'admin')
         self.timeout = config.get('timeout', 1)
         self.secret = config.get('secret', 'gateway-admin-secret')
+        self.pod_selector = config.get('podSelector', 'app.kubernetes.io/component=datapower')
         api_test_config = config.get('api_tests', None)
         if api_test_config and api_test_config['enabled'] is True:
             self.api_tests = api_test_config['apis']
@@ -72,10 +73,10 @@ class DataPowerNet():
         try:
             if None is self.namespace:
                 pods = v1.list_pod_for_all_namespaces(
-                    label_selector="app.kubernetes.io/component=datapower").items
+                    label_selector=self.pod_selector).items
             else:
                 pods = v1.list_namespaced_pod(
-                    label_selector="app.kubernetes.io/component=datapower", 
+                    label_selector=self.pod_selector, 
                     namespace=self.namespace).items
             for i in pods:
                 # Use default port of 5554 if not annotated
